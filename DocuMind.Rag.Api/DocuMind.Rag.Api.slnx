@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../DocuMind.Application/DocuMind.Application.csproj" Id="c315aece-7ac7-45de-b43f-3c71cb8bfc5d" />
+  <Project Path="../DocuMind.Domain/DocuMind.Domain.csproj" Id="21da40ce-7075-48cb-8c3b-6a2bccd6db2a" />
+  <Project Path="../DocuMind.Infrastructure/DocuMind.Infrastructure.csproj" Id="b876399d-4a27-4af8-93c1-74c4a565a957" />
+  <Project Path="DocuMind.Rag.Api.csproj" />
+</Solution>

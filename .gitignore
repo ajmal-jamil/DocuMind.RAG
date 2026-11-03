@@ -1,0 +1,27 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build output
+bin/
+obj/
+
+# NuGet
+*.nupkg
+packages/
+
+# Secrets and local configuration
+appsettings.Development.json
+secrets.json
+
+# User-specific files
+*.userosscache
+*.sln.docstates
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log

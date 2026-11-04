@@ -1,18 +1,20 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DocuMind.Application.Interfaces.Embeddings;
+using DocuMind.Infrastructure.AI.Configuration;
+using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace DocuMind.Application.Interfaces.Embeddings
+namespace DocuMind.Infrastructure.AI
 {
     public class GeminiEmbeddingService : IEmbeddingService
     {
         private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
+        private readonly EmbeddingOptions _options;
 
-        public GeminiEmbeddingService(HttpClient httpClient, IConfiguration configuration)
+        public GeminiEmbeddingService(HttpClient httpClient, IOptions<EmbeddingOptions> options)
         {
             _httpClient = httpClient;
-            _configuration = configuration;
+            _options = options.Value;
         }
 
         public Task<float[]> GenerateDocumentEmbeddingAsync(
@@ -45,19 +47,20 @@ namespace DocuMind.Application.Interfaces.Embeddings
             if (string.IsNullOrWhiteSpace(text))
                 throw new ArgumentException("Text cannot be empty.");
 
-            var apiKey = _configuration["AI:Embedding:ApiKey"];
+            var apiKey = _options.ApiKey;
+            var baseUrl = _options.BaseUrl;
+            var model = _options.Model;
 
             ArgumentException.ThrowIfNullOrEmpty(apiKey, "Gemini API key is not configured");
+            ArgumentException.ThrowIfNullOrEmpty(baseUrl, "Gemini API base URL is not configured");
+            ArgumentException.ThrowIfNullOrEmpty(model, "Gemini API model is not configured");
 
-            var baseUrl = _configuration["AI:Embedding:BaseUrl"];
-            var model = _configuration["AI:Embedding:Model"];
-            int dimensions = int.TryParse(_configuration["AI:Embedding:Dimensions"], out var dim) ? dim : 768;
-
+            int dimensions = _options.Dimensions;
 
             ArgumentException.ThrowIfNullOrEmpty(baseUrl, "Gemini API base URL is not configured");
             ArgumentException.ThrowIfNullOrEmpty(model, "Gemini API model is not configured");
                         
-            var url = $"{baseUrl}/{model}:embedContent";
+            var url = $"{baseUrl}/models/{model}:embedContent";
 
             var requestBody = new
             {

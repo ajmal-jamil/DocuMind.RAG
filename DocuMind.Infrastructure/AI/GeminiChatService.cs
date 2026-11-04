@@ -1,31 +1,30 @@
 ﻿using DocuMind.Application.Interfaces.AI;
+using DocuMind.Infrastructure.AI.Configuration;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace DocuMind.Application.Services.AI
+namespace DocuMind.Infrastructure.AI
 {
     public class GeminiChatService : IGenerateAIResponseService
     {
         private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
+        private readonly ChatOptions _options;
 
-        public GeminiChatService(HttpClient httpClient, IConfiguration configuration)
+        public GeminiChatService(HttpClient httpClient, IOptions<ChatOptions> options)
         {
             _httpClient = httpClient;
-            _configuration = configuration;
+            _options = options.Value;
         }
 
         public async Task<string> GenerateResponseAsync(string prompt, CancellationToken cancellationToken = default)
         {
-            var apiKey = _configuration["AI:Chat:ApiKey"];
+            var apiKey = _options.ApiKey;
+            var baseUrl = _options.BaseUrl;
+            var model = _options.Model;
 
             ArgumentException.ThrowIfNullOrEmpty(apiKey, "Gemini API key is not configured");
-            
-            var baseUrl = _configuration["AI:Chat:BaseUrl"];
-            var model = _configuration["AI:Chat:Model"];
-
             ArgumentException.ThrowIfNullOrEmpty(baseUrl, "Gemini API base URL is not configured");
             ArgumentException.ThrowIfNullOrEmpty(model, "Gemini API model is not configured");
 
@@ -46,7 +45,8 @@ namespace DocuMind.Application.Services.AI
                     },
                     generationConfig = new
                     {
-                        maxOutputTokens = 256
+                        temperature = _options.Temperature,
+                        maxOutputTokens = _options.MaxOutputTokens
                     }
             };
 

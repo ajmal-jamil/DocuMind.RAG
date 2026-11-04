@@ -1,16 +1,14 @@
 ﻿using DocuMind.Application.Interfaces.AI;
-using DocuMind.Application.Interfaces.Documents;
 using DocuMind.Application.Interfaces.Embeddings;
-using DocuMind.Application.Services.AI;
 using DocuMind.Application.Services.Documents;
+using DocuMind.Infrastructure.AI;
 using DocuMind.Infrastructure.Interface;
 using DocuMind.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using DocuMind.Infrastructure.AI.Configuration;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocuMind.Infrastructure
 {
@@ -24,6 +22,14 @@ namespace DocuMind.Infrastructure
             services.AddScoped<IDocumentAnswerService, DocumentAnswerService>();
             services.AddScoped<IDocumentStorageService, DocumentStorageService>();
 
+            services.AddOptions<ChatOptions>()
+                .Bind(configuration.GetSection(ChatOptions.SectionName))
+                .ValidateDataAnnotations()
+                .ValidateOnStart(); 
+            services.AddOptions<EmbeddingOptions>()
+                .Bind(configuration.GetSection(EmbeddingOptions.SectionName))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
 
             var connectionString =
             configuration.GetConnectionString("DefaultConnection");

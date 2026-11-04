@@ -1,14 +1,3 @@
-using DocuMind.Rag.Api.Services;
-using DocuMind.Rag.Api.Services.TextChunk;
-using Microsoft.EntityFrameworkCore;
-using Pgvector.EntityFrameworkCore;
-using DocuMind.Application.Interfaces.AI;
-using DocuMind.Application.Interfaces.Documents;
-using DocuMind.Application.Interfaces.TextChunk;
-using DocuMind.Infrastructure.Interface;
-using DocuMind.Application.Services.Documents;
-using DocuMind.Application.Interfaces.Embeddings;
-using DocuMind.Application.Services.AI;
 using DocuMind.Application;
 using DocuMind.Infrastructure;
 
@@ -20,7 +9,9 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication()
+    .AddInfrastructure(builder.Configuration)
+    .AddAIServices(builder.Configuration);
 
 var app = builder.Build();
 

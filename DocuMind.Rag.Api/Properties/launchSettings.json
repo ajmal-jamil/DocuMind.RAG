@@ -15,7 +15,8 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7022;http://localhost:5260",
+      "applicationUrl": "https://localhost:7022",
+      "redirectUri": "https://localhost:7022/swagger/oauth2-redirect.html",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

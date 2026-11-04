@@ -67,9 +67,10 @@ namespace DocuMind.Rag.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> Search([FromQuery] string question, [FromQuery] int topK = 5, CancellationToken cancellationToken = default)
+        [HttpPost("search")]
+        public async Task<IActionResult> Search([FromBody] string question, CancellationToken cancellationToken = default)
         {
+            int topK = 5;
             if (string.IsNullOrWhiteSpace(question))
                 return BadRequest("Question cannot be empty.");
 
@@ -96,8 +97,8 @@ namespace DocuMind.Rag.Api.Controllers
         }
 
 
-        [HttpGet("ask")]
-        public async Task<IActionResult> Ask([FromQuery] string question, CancellationToken cancellationToken = default)
+        [HttpPost("ask")]
+        public async Task<IActionResult> Ask([FromBody] string question, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(question))
                 return BadRequest("Question cannot be empty.");

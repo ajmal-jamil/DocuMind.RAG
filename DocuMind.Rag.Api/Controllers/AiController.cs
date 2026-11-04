@@ -1,5 +1,6 @@
 ﻿using DocuMind.Application.Interfaces.AI;
 using DocuMind.Rag.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocuMind.Rag.Api.Controllers
@@ -9,12 +10,13 @@ namespace DocuMind.Rag.Api.Controllers
     public class AiController : ControllerBase
     {
         private readonly IGenerateAIResponseService _geminiChatService;
-
-        public AiController(IGenerateAIResponseService geminiChatService)
+        private readonly ILogger<AiController> _logger;
+        public AiController(IGenerateAIResponseService geminiChatService, ILogger<AiController> logger)
         {
             _geminiChatService = geminiChatService;
+            _logger = logger;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("chat")]
         public async Task<IActionResult> Chat([FromBody] ChatRequest request, CancellationToken cancellationToken)
         {
@@ -29,8 +31,12 @@ namespace DocuMind.Rag.Api.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (not shown here for brevity)
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex, "Error processing AI request");
+
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred."
+                });
             }
         }
     }

@@ -46,14 +46,13 @@ namespace DocuMind.Infrastructure.Interface
             }
 
             var queryVector = new Vector(embeddingValues);
-
+            var maxDistance = 0.45; // Cosine distance ranges from 0 (identical) to 2 (opposite)
             // 2. Find the closest document chunks using cosine distance.
             var results = await _dbContext.DocumentChunks
                 .AsNoTracking()
                 .Where(chunk => chunk.Embedding != null)
                 .OrderBy(chunk =>
                     chunk.Embedding!.CosineDistance(queryVector))
-                .Take(topK)
                 .Select(chunk => new DocumentSearchResult
                 {
                     DocumentId = chunk.DocumentId,
@@ -62,6 +61,8 @@ namespace DocuMind.Infrastructure.Interface
                     Content = chunk.Content,
                     Distance = chunk.Embedding!.CosineDistance(queryVector)
                 })
+                .Where(x => x.Distance <= maxDistance)
+                .Take(topK)
                 .ToListAsync(cancellationToken);
 
             return results;

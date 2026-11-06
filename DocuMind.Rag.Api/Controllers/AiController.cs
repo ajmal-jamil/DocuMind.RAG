@@ -16,7 +16,7 @@ namespace DocuMind.Rag.Api.Controllers
             _geminiChatService = geminiChatService;
             _logger = logger;
         }
-        [Authorize(Roles = "Admin")]
+        
         [HttpPost("chat")]
         public async Task<IActionResult> Chat([FromBody] ChatRequest request, CancellationToken cancellationToken)
         {

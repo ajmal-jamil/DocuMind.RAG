@@ -34,6 +34,7 @@ namespace DocuMind.Infrastructure.Persistence
                     .WithOne(x => x.Document)
                     .HasForeignKey(x => x.DocumentId)
                     .OnDelete(DeleteBehavior.Cascade);
+
             });
 
 
@@ -52,6 +53,12 @@ namespace DocuMind.Infrastructure.Persistence
                     x.DocumentId,
                     x.ChunkIndex
                 }).IsUnique();
+
+                entity.HasIndex(x => x.Embedding)
+                            .HasMethod("hnsw")
+                            .HasOperators("vector_cosine_ops");
+
+
             });
 
         }
